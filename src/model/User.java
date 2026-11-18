@@ -1,19 +1,18 @@
-import java.io.Serializable;
-
-public abstract class User implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public abstract class User {
 
     private String username;
     private String password;
 
     protected User(String username, String password) {
-        if (username == null || username.trim().isEmpty()) {
-            throw new IllegalArgumentException("Username cannot be blank.");
+
+        if (username == null || username.trim().length() == 0) {
+            throw new IllegalArgumentException(
+                    "Username cannot be blank.");
         }
 
-        if (password == null || password.trim().isEmpty()) {
-            throw new IllegalArgumentException("Password cannot be blank.");
+        if (password == null || password.trim().length() == 0) {
+            throw new IllegalArgumentException(
+                    "Password cannot be blank.");
         }
 
         this.username = username.trim();
@@ -25,6 +24,11 @@ public abstract class User implements Serializable {
     }
 
     public boolean checkPassword(String input) {
+
+        if (input == null) {
+            return false;
+        }
+
         return password.equals(input);
     }
 
