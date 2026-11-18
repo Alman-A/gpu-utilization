@@ -1,7 +1,5 @@
 public class Student extends User {
 
-    private static final long serialVersionUID = 1L;
-
     private String name;
     private String email;
     private String phone;
@@ -13,16 +11,19 @@ public class Student extends User {
 
         super(universityId, password);
 
-        if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("Name cannot be blank.");
+        if (name == null || name.trim().length() == 0) {
+            throw new IllegalArgumentException(
+                    "Name cannot be blank.");
         }
 
-        if (email == null || email.trim().isEmpty()) {
-            throw new IllegalArgumentException("Email cannot be blank.");
+        if (email == null || email.trim().length() == 0) {
+            throw new IllegalArgumentException(
+                    "Email cannot be blank.");
         }
 
-        if (phone == null || phone.trim().isEmpty()) {
-            throw new IllegalArgumentException("Phone cannot be blank.");
+        if (phone == null || phone.trim().length() == 0) {
+            throw new IllegalArgumentException(
+                    "Phone cannot be blank.");
         }
 
         if (allowance == null) {
