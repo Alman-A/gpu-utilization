@@ -8,7 +8,6 @@ public class TimeAllowance {
     public TimeAllowance(int allocated) {
         if(allocated <=0) {
             throw new IllegalArgumentException("Allocated minutes must be positive.");
-
         }
         this.allocated = allocated;
         used = 0;
