@@ -12,23 +12,19 @@ public class Student extends User {
         super(universityId, password);
 
         if (name == null || name.trim().length() == 0) {
-            throw new IllegalArgumentException(
-                    "Name cannot be blank.");
+            throw new IllegalArgumentException("Name cannot be blank.");
         }
 
         if (email == null || email.trim().length() == 0) {
-            throw new IllegalArgumentException(
-                    "Email cannot be blank.");
+            throw new IllegalArgumentException("Email cannot be blank.");
         }
 
         if (phone == null || phone.trim().length() == 0) {
-            throw new IllegalArgumentException(
-                    "Phone cannot be blank.");
+            throw new IllegalArgumentException("Phone cannot be blank.");
         }
 
         if (allowance == null) {
-            throw new IllegalArgumentException(
-                    "Time allowance cannot be null.");
+            throw new IllegalArgumentException("Time allowance cannot be null.");
         }
 
         this.name = name.trim();
