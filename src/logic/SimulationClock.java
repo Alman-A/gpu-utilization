@@ -21,14 +21,12 @@ public class SimulationClock {
 
         if (isInitialized()) {
             throw new IllegalStateException(
-                "The simulation clock is already initialized."
-            );
+                    "The simulation clock is already initialized.");
         }
 
         if (start == null) {
             throw new IllegalArgumentException(
-                "A starting date and time must be provided."
-            );
+                    "A starting date and time must be provided.");
         }
 
         initialTime = start.withSecond(0).withNano(0);
@@ -47,8 +45,7 @@ public class SimulationClock {
 
         if (!isInitialized()) {
             throw new IllegalStateException(
-                "Initialize the simulation clock first."
-            );
+                    "Initialize the simulation clock first.");
         }
 
         currentTime = currentTime.plusMinutes(1);
@@ -61,33 +58,33 @@ public class SimulationClock {
         }
 
         return Duration.between(
-            initialTime, currentTime
-        ).toMinutes();
+                initialTime, currentTime).toMinutes();
     }
+
     public void restore(LocalDateTime initial, LocalDateTime current) {
 
-    if (isInitialized()) {
-        throw new IllegalStateException(
-                "The simulation clock is already initialized.");
-    }
+        if (isInitialized()) {
+            throw new IllegalStateException(
+                    "The simulation clock is already initialized.");
+        }
 
-    if (initial == null || current == null) {
-        throw new IllegalArgumentException(
-                "Both saved timestamps must be provided.");
-    }
+        if (initial == null || current == null) {
+            throw new IllegalArgumentException(
+                    "Both saved timestamps must be provided.");
+        }
 
-    if (current.isBefore(initial)) {
-        throw new IllegalArgumentException(
-                "Current time cannot be before the initial time.");
-    }
+        if (current.isBefore(initial)) {
+            throw new IllegalArgumentException(
+                    "Current time cannot be before the initial time.");
+        }
 
-    if (initial.getSecond() != 0 || initial.getNano() != 0
-            || current.getSecond() != 0 || current.getNano() != 0) {
-        throw new IllegalArgumentException(
-                "Saved timestamps must use whole minutes.");
-    }
+        if (initial.getSecond() != 0 || initial.getNano() != 0
+                || current.getSecond() != 0 || current.getNano() != 0) {
+            throw new IllegalArgumentException(
+                    "Saved timestamps must use whole minutes.");
+        }
 
-    initialTime = initial;
-    currentTime = current;
-}
+        initialTime = initial;
+        currentTime = current;
+    }
 }

@@ -1,0 +1,54 @@
+GPU_TEXT_2
+103
+S2026-11-20T10:00
+S2026-11-20T10:07
+1
+STEST001
+STest Student
+Stest@example.com
+S0501234567
+Stest123
+SAPPROVED
+1
+STEST001
+120
+5
+15
+1
+STEST001
+20
+SStorage test grant
+Sadmin
+S2026-11-20T10:07
+2
+101
+STEST001
+SCompleted test
+STest application
+SA small test job.
+SSmall
+S2026-11-20T10:00
+SCompleted
+1
+S2026-11-20T10:00
+S2026-11-20T10:05
+N
+N
+N
+SSimulated execution completed successfully; 5 GPU minutes.
+102
+STEST001
+SRunning test
+STest application
+SFirst line.\nSecond line.
+SMedium
+S2026-11-20T10:05
+SRunning
+1
+S2026-11-20T10:05
+N
+N
+N
+N
+S
+END
