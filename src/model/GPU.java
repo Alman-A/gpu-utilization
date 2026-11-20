@@ -7,17 +7,16 @@ public class GPU {
     public GPU(int id) {
         if(id < 1 || id > 4) {
             throw new IllegalArgumentException("GPU ID must be between 1 and 4.");
-
         }
         this.id = id;
         currentJobId = null;
     }
 
-    public int getID() {
+    public int getId() {
         return id;
     }
 
-    public Integer getCurrentJobID() {
+    public Integer getCurrentJobId() {
         return currentJobId;
     }
 
@@ -28,11 +27,9 @@ public class GPU {
     public void assign(int jobId) {
         if (jobId <= 0) {
             throw new IllegalArgumentException("Job ID must be positive.");
-
         }
         if (!isFree()) {
             throw new IllegalStateException("This GPU is already running a job.");
-
         }
         currentJobId = jobId;
     }
