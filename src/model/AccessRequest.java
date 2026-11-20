@@ -1,3 +1,5 @@
+package model;
+
 public class AccessRequest {
 
     private String universityId;

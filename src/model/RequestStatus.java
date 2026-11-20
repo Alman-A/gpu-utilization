@@ -1,3 +1,5 @@
+package model;
+
 public class RequestStatus {
 
     public static final String PENDING = "PENDING";
