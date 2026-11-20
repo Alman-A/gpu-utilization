@@ -12,28 +12,23 @@ public class AccessRequest {
 
         if (universityId == null
                 || universityId.trim().length() == 0) {
-            throw new IllegalArgumentException(
-                    "University ID cannot be blank.");
+            throw new IllegalArgumentException("University ID cannot be blank.");
         }
 
         if (name == null || name.trim().length() == 0) {
-            throw new IllegalArgumentException(
-                    "Name cannot be blank.");
+            throw new IllegalArgumentException("Name cannot be blank.");
         }
 
         if (email == null || email.trim().length() == 0) {
-            throw new IllegalArgumentException(
-                    "Email cannot be blank.");
+            throw new IllegalArgumentException("Email cannot be blank.");
         }
 
         if (phone == null || phone.trim().length() == 0) {
-            throw new IllegalArgumentException(
-                    "Phone cannot be blank.");
+            throw new IllegalArgumentException("Phone cannot be blank.");
         }
 
         if (password == null || password.trim().length() == 0) {
-            throw new IllegalArgumentException(
-                    "Password cannot be blank.");
+            throw new IllegalArgumentException("Password cannot be blank.");
         }
 
         this.universityId = universityId.trim();
@@ -71,8 +66,7 @@ public class AccessRequest {
     public void approve() {
 
         if (!RequestStatus.PENDING.equals(status)) {
-            throw new IllegalStateException(
-                    "Only pending requests can be approved.");
+            throw new IllegalStateException("Only pending requests can be approved.");
         }
 
         status = RequestStatus.APPROVED;
@@ -81,8 +75,7 @@ public class AccessRequest {
     public void reject() {
 
         if (!RequestStatus.PENDING.equals(status)) {
-            throw new IllegalStateException(
-                    "Only pending requests can be rejected.");
+            throw new IllegalStateException("Only pending requests can be rejected.");
         }
 
         status = RequestStatus.REJECTED;
