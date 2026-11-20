@@ -64,4 +64,30 @@ public class SimulationClock {
             initialTime, currentTime
         ).toMinutes();
     }
+    public void restore(LocalDateTime initial, LocalDateTime current) {
+
+    if (isInitialized()) {
+        throw new IllegalStateException(
+                "The simulation clock is already initialized.");
+    }
+
+    if (initial == null || current == null) {
+        throw new IllegalArgumentException(
+                "Both saved timestamps must be provided.");
+    }
+
+    if (current.isBefore(initial)) {
+        throw new IllegalArgumentException(
+                "Current time cannot be before the initial time.");
+    }
+
+    if (initial.getSecond() != 0 || initial.getNano() != 0
+            || current.getSecond() != 0 || current.getNano() != 0) {
+        throw new IllegalArgumentException(
+                "Saved timestamps must use whole minutes.");
+    }
+
+    initialTime = initial;
+    currentTime = current;
+}
 }
