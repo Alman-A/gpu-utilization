@@ -14,6 +14,18 @@ public class TimeAllowance {
         reserved = 0;
     }
 
+    public TimeAllowance(int allocated, int used, int reserved) {
+
+    if (allocated <= 0 || used < 0 || reserved < 0
+            || (long) used + reserved > allocated) {
+        throw new IllegalArgumentException("Invalid saved allowance.");
+    }
+
+    this.allocated = allocated;
+    this.used = used;
+    this.reserved = reserved;
+}
+
     public int getAllocated() {
         return allocated;
     }
@@ -32,7 +44,7 @@ public class TimeAllowance {
 
     public void reserve(int minutes) {
         if(minutes <= 0) {
-            throw new IllegalArgumentException("Reserved minuted must be positive.");
+            throw new IllegalArgumentException("Reserved minutes must be positive.");
 
         }
         if (minutes > getAvailable()) {
@@ -48,7 +60,7 @@ public class TimeAllowance {
 
         }
         if (duration > reserved) {
-            throw new IllegalStateException("Not enough reserved minuted to settle this job.");
+            throw new IllegalStateException("Not enough reserved minutes to settle this job.");
 
         }
         reserved -= duration;
@@ -56,7 +68,7 @@ public class TimeAllowance {
     }
     public void grant(int minutes) {
         if(minutes <= 0) {
-            throw new IllegalArgumentException("Granted minuted must be positive.");
+            throw new IllegalArgumentException("Granted minutes must be positive.");
 
         }
 
