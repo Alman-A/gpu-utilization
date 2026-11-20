@@ -6,13 +6,11 @@ public abstract class User {
     protected User(String username, String password) {
 
         if (username == null || username.trim().length() == 0) {
-            throw new IllegalArgumentException(
-                    "Username cannot be blank.");
+            throw new IllegalArgumentException("Username cannot be blank.");
         }
 
         if (password == null || password.trim().length() == 0) {
-            throw new IllegalArgumentException(
-                    "Password cannot be blank.");
+            throw new IllegalArgumentException("Password cannot be blank.");
         }
 
         this.username = username.trim();
