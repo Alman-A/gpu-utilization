@@ -12,28 +12,23 @@ public class TimeGrant {
                      String grantedBy, LocalDateTime time) {
 
         if (studentId == null || studentId.trim().length() == 0) {
-            throw new IllegalArgumentException(
-                    "Student ID cannot be blank.");
+            throw new IllegalArgumentException("Student ID cannot be blank.");
         }
 
         if (minutes <= 0) {
-            throw new IllegalArgumentException(
-                    "Granted minutes must be greater than zero.");
+            throw new IllegalArgumentException("Granted minutes must be greater than zero.");
         }
 
         if (reason == null || reason.trim().length() == 0) {
-            throw new IllegalArgumentException(
-                    "A reason is required for granting time.");
+            throw new IllegalArgumentException( "A reason is required for granting time.");
         }
 
         if (grantedBy == null || grantedBy.trim().length() == 0) {
-            throw new IllegalArgumentException(
-                    "Administrator username cannot be blank.");
+            throw new IllegalArgumentException("Administrator username cannot be blank.");
         }
 
         if (time == null) {
-            throw new IllegalArgumentException(
-                    "Grant time cannot be null.");
+            throw new IllegalArgumentException("Grant time cannot be null.");
         }
 
         this.studentId = studentId.trim();
