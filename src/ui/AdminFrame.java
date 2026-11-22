@@ -3,6 +3,8 @@ package ui;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import javax.swing.*;
 
@@ -110,6 +112,7 @@ public class AdminFrame extends JFrame implements ActionListener {
         saveButton.addActionListener(this);
         logoutButton.addActionListener(this);
 
+        // Main displays this frame and handles window closing.
         showDashboard();
     }
 
@@ -193,22 +196,21 @@ public class AdminFrame extends JFrame implements ActionListener {
                     "UNSAVED CHANGES - click Retry Save\n\n");
         }
 
-        if (service.isClockInitialized()) {
-            outputArea.append(
-                    "Simulation time: "
-                    + service.getCurrentTime() + "\n");
-        } else {
-            outputArea.append("Simulation clock is not initialized.\n");
-        }
-
         outputArea.append(
-                "Busy GPUs: "
+                "Simulation time: "
+                + displayTime(service.getCurrentTime())
+                + "\nBusy GPUs: "
                 + service.getBusyGpuCount() + " / 4\n");
 
-        Double utilization = service.getUtilizationPercent();
+        Double utilization = null;
+
+        if (service.isClockInitialized()) {
+            utilization = service.getUtilizationPercent();
+        }
 
         if (utilization == null) {
             outputArea.append("Utilization: N/A\n");
+
         } else {
             outputArea.append(
                     String.format(
@@ -247,10 +249,12 @@ public class AdminFrame extends JFrame implements ActionListener {
                                         service.getCurrentTime());
 
                         outputArea.append(
-                                "\nRemaining: " + remaining + " minutes"
+                                "\nRemaining: "
+                                + remaining + " minutes"
                                 + "\nExpected finish: "
-                                + job.getStartTime().plusMinutes(
-                                        job.getEstimatedDuration()));
+                                + displayTime(
+                                        job.getStartTime().plusMinutes(
+                                                job.getEstimatedDuration())));
                     }
                 }
 
@@ -267,24 +271,25 @@ public class AdminFrame extends JFrame implements ActionListener {
 
             String status = jobs.get(i).getStatus();
 
-            if (status.equals(JobStatus.QUEUED)) {
+            if (JobStatus.QUEUED.equals(status)) {
                 queued++;
 
-            } else if (status.equals(JobStatus.RUNNING)) {
+            } else if (JobStatus.RUNNING.equals(status)) {
                 running++;
 
-            } else if (status.equals(JobStatus.COMPLETED)) {
+            } else if (JobStatus.COMPLETED.equals(status)) {
                 completed++;
 
-            } else if (status.equals(JobStatus.CANCELLED)) {
+            } else if (JobStatus.CANCELLED.equals(status)) {
                 cancelled++;
             }
         }
 
-        outputArea.append("\nQueued: " + queued);
-        outputArea.append("\nRunning: " + running);
-        outputArea.append("\nCompleted: " + completed);
-        outputArea.append("\nCancelled: " + cancelled + "\n");
+        outputArea.append(
+                "\nQueued: " + queued
+                + "\nRunning: " + running
+                + "\nCompleted: " + completed
+                + "\nCancelled: " + cancelled + "\n");
 
         outputArea.append("\nSTUDENT BALANCES\n");
 
@@ -305,14 +310,14 @@ public class AdminFrame extends JFrame implements ActionListener {
 
             outputArea.append(
                     "\nJ" + prediction.getJobId()
-                    + " | Position: "
-                    + prediction.getQueuePosition()
+                    + " | Position: " + prediction.getQueuePosition()
                     + "\nGPU: " + prediction.getPredictedGpuId()
                     + "\nWait: "
-                    + prediction.getRemainingWaitMinutes()
-                    + " minutes"
-                    + "\nStart: " + prediction.getPredictedStart()
-                    + "\nFinish: " + prediction.getPredictedFinish()
+                    + prediction.getRemainingWaitMinutes() + " minutes"
+                    + "\nStart: "
+                    + displayTime(prediction.getPredictedStart())
+                    + "\nFinish: "
+                    + displayTime(prediction.getPredictedFinish())
                     + "\n");
 
             for (int j = 0; j < jobs.size(); j++) {
@@ -320,6 +325,7 @@ public class AdminFrame extends JFrame implements ActionListener {
                 Job job = jobs.get(j);
 
                 if (job.getJobId() == prediction.getJobId()) {
+
                     outputArea.append(
                             "Student: " + job.getStudentId()
                             + "\nApplication: "
@@ -332,7 +338,9 @@ public class AdminFrame extends JFrame implements ActionListener {
 
         for (int i = 0; i < jobs.size(); i++) {
 
-            if (jobs.get(i).getStatus().equals(JobStatus.COMPLETED)) {
+            if (JobStatus.COMPLETED.equals(
+                    jobs.get(i).getStatus())) {
+
                 displayJob(jobs.get(i));
             }
         }
@@ -347,9 +355,9 @@ public class AdminFrame extends JFrame implements ActionListener {
         if (status.equals("")) {
             status = null;
 
-        } else if (!status.equals(RequestStatus.PENDING)
-                && !status.equals(RequestStatus.APPROVED)
-                && !status.equals(RequestStatus.REJECTED)) {
+        } else if (!RequestStatus.PENDING.equals(status)
+                && !RequestStatus.APPROVED.equals(status)
+                && !RequestStatus.REJECTED.equals(status)) {
 
             throw new IllegalArgumentException(
                     "Use PENDING, APPROVED or REJECTED.");
@@ -442,10 +450,10 @@ public class AdminFrame extends JFrame implements ActionListener {
         if (status.equals("")) {
             status = null;
 
-        } else if (!status.equals(JobStatus.QUEUED)
-                && !status.equals(JobStatus.RUNNING)
-                && !status.equals(JobStatus.COMPLETED)
-                && !status.equals(JobStatus.CANCELLED)) {
+        } else if (!JobStatus.QUEUED.equals(status)
+                && !JobStatus.RUNNING.equals(status)
+                && !JobStatus.COMPLETED.equals(status)
+                && !JobStatus.CANCELLED.equals(status)) {
 
             throw new IllegalArgumentException(
                     "Use QUEUED, RUNNING, COMPLETED or CANCELLED.");
@@ -470,32 +478,40 @@ public class AdminFrame extends JFrame implements ActionListener {
     private void displayJob(Job job) {
 
         outputArea.append(
-                "\n" + job.getDisplayId()
-                + " - " + job.getTitle()
+                "\n" + job.getDisplayId() + " - " + job.getTitle()
                 + "\nStudent: " + job.getStudentId()
                 + "\nApplication: " + job.getApplicationName()
                 + "\nDescription: " + job.getDescription()
-                + "\nTask size: " + job.getTaskSize()
+                + "\nTask size: " + job.getTaskSize().getName()
                 + "\nStatus: " + job.getStatus()
                 + "\nDuration: "
                 + job.getEstimatedDuration() + " minutes"
-                + "\nGPU: " + job.getAssignedGpuId()
-                + "\nSubmitted: " + job.getSubmissionTime()
-                + "\nStarted: " + job.getStartTime()
-                + "\nFinished: " + job.getFinishTime()
-                + "\nQueue wait: " + job.getQueueWaitMinutes()
+                + "\nGPU: "
+                + displayNumber(job.getAssignedGpuId())
+                + "\nSubmitted: "
+                + displayTime(job.getSubmissionTime())
+                + "\nStarted: "
+                + displayTime(job.getStartTime())
+                + "\nFinished: "
+                + displayTime(job.getFinishTime())
+                + "\nQueue wait: "
+                + displayNumber(job.getQueueWaitMinutes())
                 + "\nRuntime: "
                 + job.getRuntime(service.getCurrentTime())
                 + "\nCharged minutes: " + job.getCharge()
-                + "\nResult: " + job.getResultSummary()
+                + "\nResult: "
+                + displayText(job.getResultSummary())
                 + "\n");
 
-        if (job.getStatus().equals(JobStatus.CANCELLED)) {
+        if (JobStatus.CANCELLED.equals(job.getStatus())) {
 
             outputArea.append(
-                    "Cancelled at: " + job.getCancellationTime()
-                    + "\nCancelled by: " + job.getCancelledBy()
-                    + "\nReason: " + job.getCancellationReason()
+                    "Cancelled at: "
+                    + displayTime(job.getCancellationTime())
+                    + "\nCancelled by: "
+                    + displayText(job.getCancelledBy())
+                    + "\nReason: "
+                    + displayText(job.getCancellationReason())
                     + "\n");
         }
     }
@@ -604,8 +620,8 @@ public class AdminFrame extends JFrame implements ActionListener {
                     "Job was not found.");
         }
 
-        if (!selectedJob.getStatus().equals(JobStatus.QUEUED)
-                && !selectedJob.getStatus().equals(JobStatus.RUNNING)) {
+        if (!JobStatus.QUEUED.equals(selectedJob.getStatus())
+                && !JobStatus.RUNNING.equals(selectedJob.getStatus())) {
 
             throw new IllegalStateException(
                     "Only queued or running jobs can be cancelled.");
@@ -613,7 +629,7 @@ public class AdminFrame extends JFrame implements ActionListener {
 
         int charge = 0;
 
-        if (selectedJob.getStatus().equals(JobStatus.RUNNING)) {
+        if (JobStatus.RUNNING.equals(selectedJob.getStatus())) {
             charge = selectedJob.getRuntime(
                     service.getCurrentTime());
         }
@@ -655,5 +671,35 @@ public class AdminFrame extends JFrame implements ActionListener {
         }
 
         return number;
+    }
+
+    private String displayTime(LocalDateTime time) {
+
+        if (time == null) {
+            return "N/A";
+        }
+
+        DateTimeFormatter format =
+                DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+        return time.format(format);
+    }
+
+    private String displayNumber(Integer number) {
+
+        if (number == null) {
+            return "N/A";
+        }
+
+        return number.toString();
+    }
+
+    private String displayText(String text) {
+
+        if (text == null || text.equals("")) {
+            return "N/A";
+        }
+
+        return text;
     }
 }
