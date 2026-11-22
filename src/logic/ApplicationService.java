@@ -207,7 +207,6 @@ public class ApplicationService {
 
             Job job = state.getJobs().get(i);
 
-            // Students can see only their own jobs.
             if (!"ADMIN".equals(currentUser.getRole())&& !job.getStudentId().equals(currentUser.getUsername())) {
                 continue;
             }
@@ -216,7 +215,7 @@ public class ApplicationService {
                 continue;
             }
 
-            if (!job.getDisplayId().toLowerCase().contains(search) && !job.getTitle().toLowerCase().contains(search)) {
+            if (job.getDisplayId().toLowerCase().indexOf(search) ==-1 && job.getTitle().toLowerCase().indexOf(search) == - 1) {
                 continue;
             }
 
