@@ -1,12 +1,14 @@
 package ui;
+
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
+import java.io.IOException;
 import java.time.*;
 import java.time.format.*;
 import java.util.ArrayList;
+
 import javax.swing.*;
-import javax.swing.table.*;
+
 import logic.ApplicationService;
 import model.*;
 
@@ -15,38 +17,21 @@ public class StudentFrame extends JFrame
 
     private ApplicationService service;
 
-    private JLabel welcomeLabel;
-    private JLabel clockLabel;
+    private JLabel welcomeLabel, clockLabel;
+    private JLabel allocatedLabel, usedLabel;
+    private JLabel reservedLabel, availableLabel;
+    private JLabel durationLabel, saveLabel;
 
-    private JLabel allocatedLabel;
-    private JLabel usedLabel;
-    private JLabel reservedLabel;
-    private JLabel availableLabel;
+    private JTextField titleField, applicationField;
+    private JTextField searchField, cancelIdField;
 
-    private JLabel durationLabel;
-    private JLabel saveLabel;
-
-    private JTextField titleField;
-    private JTextField applicationField;
-    private JTextField searchField;
-
-    private JTextArea descriptionArea;
+    private JTextArea descriptionArea, jobsArea;
 
     private JComboBox<TaskSize> sizeBox;
     private JComboBox<String> statusBox;
 
-    private JButton submitButton;
-    private JButton cancelButton;
-    private JButton detailsButton;
-    private JButton refreshButton;
-    private JButton retrySaveButton;
-    private JButton logoutButton;
-
-    private JTable jobsTable;
-    private DefaultTableModel jobsModel;
-
-    private ArrayList<Job> displayedJobs;
-    private ArrayList<JobPrediction> predictions;
+    private JButton submitButton, cancelButton;
+    private JButton refreshButton, retrySaveButton, logoutButton;
 
     private boolean loggedOut;
 
@@ -64,10 +49,6 @@ public class StudentFrame extends JFrame
         }
 
         this.service = service;
-
-        displayedJobs = new ArrayList<Job>();
-        predictions = new ArrayList<JobPrediction>();
-
         loggedOut = false;
 
         buildUi();
@@ -77,92 +58,33 @@ public class StudentFrame extends JFrame
     private void buildUi() {
 
         setTitle("GPU Utilization Management - Student");
-        setSize(1250, 700);
+        setSize(1200, 800);
         setLocationRelativeTo(null);
 
-        setLayout(new BorderLayout(10, 10));
+        setLayout(new GridLayout(1, 2, 10, 10));
 
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(this);
 
-        JPanel header = new JPanel(new GridLayout(2, 1));
-
         welcomeLabel = new JLabel();
         clockLabel = new JLabel();
-
-        header.add(welcomeLabel);
-        header.add(clockLabel);
-
-        add(header, BorderLayout.NORTH);
-
-        JTabbedPane tabs = new JTabbedPane();
-
-        tabs.addTab("Home and submit", buildHomePanel());
-        tabs.addTab("My jobs", buildJobsPanel());
-
-        add(tabs, BorderLayout.CENTER);
-
-        refreshButton = new JButton("Refresh");
-        retrySaveButton = new JButton("Retry save");
-        logoutButton = new JButton("Log out");
-        saveLabel = new JLabel();
-
-        JPanel footer = new JPanel(
-            new FlowLayout(FlowLayout.LEFT)
-        );
-
-        footer.add(refreshButton);
-        footer.add(retrySaveButton);
-        footer.add(logoutButton);
-        footer.add(saveLabel);
-
-        add(footer, BorderLayout.SOUTH);
-
-        submitButton.addActionListener(this);
-        cancelButton.addActionListener(this);
-        detailsButton.addActionListener(this);
-
-        refreshButton.addActionListener(this);
-        retrySaveButton.addActionListener(this);
-        logoutButton.addActionListener(this);
-
-        searchField.addActionListener(this);
-        statusBox.addActionListener(this);
-        sizeBox.addActionListener(this);
-    }
-
-    private JPanel buildHomePanel() {
-
-        JPanel home = new JPanel(
-            new BorderLayout(10, 10)
-        );
-
-        home.setBorder(
-            BorderFactory.createEmptyBorder(10, 10, 10, 10)
-        );
-
         allocatedLabel = new JLabel();
         usedLabel = new JLabel();
         reservedLabel = new JLabel();
         availableLabel = new JLabel();
 
-        JPanel balances = new JPanel(
-            new GridLayout(1, 4, 10, 10)
-        );
+        JPanel balances = new JPanel(new GridLayout(6, 1));
 
+        balances.add(welcomeLabel);
+        balances.add(clockLabel);
         balances.add(allocatedLabel);
         balances.add(usedLabel);
         balances.add(reservedLabel);
         balances.add(availableLabel);
 
-        home.add(balances, BorderLayout.NORTH);
-
         titleField = new JTextField();
         applicationField = new JTextField();
-
-        descriptionArea = new JTextArea(6, 40);
-        descriptionArea.setLineWrap(true);
-        descriptionArea.setWrapStyleWord(true);
+        durationLabel = new JLabel();
 
         sizeBox = new JComboBox<TaskSize>(
             new TaskSize[] {
@@ -173,67 +95,28 @@ public class StudentFrame extends JFrame
             }
         );
 
-        JPanel fields = new JPanel(
-            new GridLayout(3, 2, 8, 8)
-        );
-
-        fields.add(new JLabel("Job title:"));
-        fields.add(titleField);
-
-        fields.add(new JLabel("Application name:"));
-        fields.add(applicationField);
-
-        fields.add(new JLabel("Task size:"));
-        fields.add(sizeBox);
-
-        JPanel description = new JPanel(
-            new BorderLayout()
-        );
-
-        description.add(
-            new JLabel("Description:"),
-            BorderLayout.NORTH
-        );
-
-        description.add(
-            new JScrollPane(descriptionArea),
-            BorderLayout.CENTER
-        );
-
-        durationLabel = new JLabel();
-        submitButton = new JButton("Submit job");
-
-        JPanel submit = new JPanel(
-            new FlowLayout(FlowLayout.LEFT)
-        );
-
-        submit.add(durationLabel);
-        submit.add(submitButton);
-
         JPanel form = new JPanel(
-            new BorderLayout(10, 10)
+            new GridLayout(4, 2, 5, 5)
         );
 
-        form.setBorder(
-            BorderFactory.createTitledBorder("Submit a new job")
-        );
+        form.add(new JLabel("Job title:"));
+        form.add(titleField);
 
-        form.add(fields, BorderLayout.NORTH);
-        form.add(description, BorderLayout.CENTER);
-        form.add(submit, BorderLayout.SOUTH);
+        form.add(new JLabel("Application name:"));
+        form.add(applicationField);
 
-        home.add(form, BorderLayout.CENTER);
+        form.add(new JLabel("Task size:"));
+        form.add(sizeBox);
 
-        return home;
-    }
+        form.add(new JLabel("Description (enter below):"));
+        form.add(durationLabel);
 
-    private JPanel buildJobsPanel() {
+        descriptionArea = new JTextArea();
+        descriptionArea.setLineWrap(true);
+        descriptionArea.setWrapStyleWord(true);
 
-        JPanel panel = new JPanel(
-            new BorderLayout(8, 8)
-        );
-
-        searchField = new JTextField(18);
+        searchField = new JTextField();
+        cancelIdField = new JTextField();
 
         statusBox = new JComboBox<String>(
             new String[] {
@@ -245,188 +128,140 @@ public class StudentFrame extends JFrame
             }
         );
 
-        detailsButton = new JButton("View details");
-        cancelButton = new JButton("Cancel selected job");
+        submitButton = new JButton("Submit job");
+        cancelButton = new JButton("Cancel job");
+        refreshButton = new JButton("Refresh jobs");
+        retrySaveButton = new JButton("Retry save");
+        logoutButton = new JButton("Log out");
+
+        saveLabel = new JLabel();
 
         JPanel controls = new JPanel(
-            new FlowLayout(FlowLayout.LEFT)
+            new GridLayout(6, 2, 5, 5)
         );
 
-        controls.add(
-            new JLabel("Job ID or title (press Enter):")
-        );
+        controls.add(submitButton);
+        controls.add(refreshButton);
 
+        controls.add(new JLabel("Search ID/title (press Enter):"));
         controls.add(searchField);
+
+        controls.add(new JLabel("Show status:"));
         controls.add(statusBox);
-        controls.add(detailsButton);
+
+        controls.add(new JLabel("Job ID to cancel (e.g. J101):"));
+        controls.add(cancelIdField);
+
         controls.add(cancelButton);
+        controls.add(retrySaveButton);
 
-        panel.add(controls, BorderLayout.NORTH);
+        controls.add(logoutButton);
+        controls.add(saveLabel);
 
-        jobsModel = new DefaultTableModel(
-            new String[] {
-                "Job",
-                "Title",
-                "Application",
-                "Size",
-                "Status",
-                "GPU",
-                "Submitted",
-                "Start",
-                "Finish",
-                "Queue position",
-                "Wait left"
-            },
-            0
+        JPanel left = new JPanel(
+            new GridLayout(4, 1, 5, 5)
         );
 
-        jobsTable = new JTable(jobsModel);
+        left.add(balances);
+        left.add(form);
+        left.add(new JScrollPane(descriptionArea));
+        left.add(controls);
 
-        jobsTable.setDefaultEditor(Object.class, null);
+        add(left);
 
-        jobsTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        jobsTable.setRowHeight(24);
+        jobsArea = new JTextArea();
+        jobsArea.setEditable(false);
+        jobsArea.setLineWrap(true);
+        jobsArea.setWrapStyleWord(true);
 
-        int[] widths = {
-            65, 150, 110, 90, 85, 60,
-            145, 155, 155, 95, 95
-        };
+        add(new JScrollPane(jobsArea));
 
-        for (int i = 0; i < widths.length; i++) {
-            jobsTable.getColumnModel()
-                .getColumn(i)
-                .setPreferredWidth(widths[i]);
-        }
+        submitButton.addActionListener(this);
+        cancelButton.addActionListener(this);
+        refreshButton.addActionListener(this);
+        retrySaveButton.addActionListener(this);
+        logoutButton.addActionListener(this);
 
-        panel.add(
-            new JScrollPane(jobsTable),
-            BorderLayout.CENTER
-        );
-
-        panel.add(
-            new JLabel(
-                "~ means predicted/expected. "
-                + "Select a job for full history and results."
-            ),
-            BorderLayout.SOUTH
-        );
-
-        return panel;
+        searchField.addActionListener(this);
+        statusBox.addActionListener(this);
+        sizeBox.addActionListener(this);
     }
 
     public void refreshView() {
 
         Student student = (Student) service.getCurrentUser();
-
         TimeAllowance allowance = service.getMyAllowance();
 
-        welcomeLabel.setText("Welcome, " + student.getName() + " | Student ID: " + student.getUniversityId());
+        welcomeLabel.setText(
+            "Welcome, " + student.getName()
+            + " | ID: " + student.getUniversityId()
+        );
 
-        clockLabel.setText("Simulation time: " + format(service.getCurrentTime()));
+        clockLabel.setText(
+            "Simulation time: " + format(service.getCurrentTime())
+        );
 
-        allocatedLabel.setText("Allocated: " + allowance.getAllocated());
+        allocatedLabel.setText(
+            "Allocated: " + allowance.getAllocated()
+        );
 
-        usedLabel.setText("Used: " + allowance.getUsed());
+        usedLabel.setText(
+            "Used: " + allowance.getUsed()
+        );
 
-        reservedLabel.setText("Reserved: " + allowance.getReserved());
+        reservedLabel.setText(
+            "Reserved: " + allowance.getReserved()
+        );
 
-        availableLabel.setText("Available: " + allowance.getAvailable());
+        availableLabel.setText(
+            "Available: " + allowance.getAvailable()
+        );
 
         TaskSize size = (TaskSize) sizeBox.getSelectedItem();
 
-        durationLabel.setText("Duration: " + size.getDuration() + " GPU minutes");
-
-        Integer selectedId = null;
-
-        int selected = jobsTable.getSelectedRow();
-
-        if (selected >= 0) {
-
-            int index = jobsTable.convertRowIndexToModel(selected);
-
-            selectedId = displayedJobs.get(index).getJobId();
-        }
-
-        String filter = (String) statusBox.getSelectedItem();
-
-        if ("All".equals(filter)) {
-            filter = null;
-        }
-
-        displayedJobs = service.getVisibleJobs(
-            searchField.getText(), filter
+        durationLabel.setText(
+            "Duration: " + size.getDuration() + " minutes"
         );
 
-        predictions = service.getVisiblePredictions();
+        String status = (String) statusBox.getSelectedItem();
 
-        jobsModel.setRowCount(0);
-
-        for (int i = 0; i < displayedJobs.size(); i++) {
-
-            Job job = displayedJobs.get(i);
-
-            JobPrediction prediction = predictionFor(
-                job.getJobId()
-            );
-
-            String start = format(job.getStartTime());
-            String finish = format(job.getFinishTime());
-
-            String position = "-";
-            String wait = "-";
-            String gpu = "-";
-
-            if (job.getAssignedGpuId() != null) {
-                gpu = "GPU" + job.getAssignedGpuId();
-            }
-
-            if (JobStatus.QUEUED.equals(job.getStatus()) && prediction != null) {
-                start = "~ " + format(
-                    prediction.getPredictedStart()
-                );
-
-                finish = "~ " + format(
-                    prediction.getPredictedFinish()
-                );
-
-                position = "" + prediction.getQueuePosition();
-
-                wait = prediction.getRemainingWaitMinutes() + " min";
-
-            } else if (JobStatus.RUNNING.equals(job.getStatus())) {
-
-                finish = "~ " + format(
-                    job.getStartTime().plusMinutes(
-                        job.getEstimatedDuration()
-                    )
-                );
-            }
-
-            jobsModel.addRow(
-                new Object[] {
-                    job.getDisplayId(),
-                    job.getTitle(),
-                    job.getApplicationName(),
-                    job.getTaskSize().getName(),
-                    job.getStatus(),
-                    gpu,
-                    format(job.getSubmissionTime()),
-                    start,
-                    finish,
-                    position,
-                    wait
-                }
-            );
-
-            if (selectedId != null && selectedId == job.getJobId()) {
-
-                int viewRow = jobsTable.convertRowIndexToView(i);
-
-                jobsTable.setRowSelectionInterval(
-                    viewRow, viewRow
-                );
-            }
+        if ("All".equals(status)) {
+            status = null;
         }
+
+        ArrayList<Job> jobs = service.getVisibleJobs(
+            searchField.getText(), status
+        );
+
+        ArrayList<JobPrediction> predictions =
+            service.getVisiblePredictions();
+
+        String text = "MY JOBS\n\n";
+
+        if (jobs.size() == 0) {
+            text += "No jobs match your search.";
+        }
+
+        for (int i = 0; i < jobs.size(); i++) {
+
+            Job job = jobs.get(i);
+            JobPrediction prediction = null;
+
+            for (int j = 0; j < predictions.size(); j++) {
+
+                if (predictions.get(j).getJobId()
+                        == job.getJobId()) {
+
+                    prediction = predictions.get(j);
+                    break;
+                }
+            }
+
+            text += describeJob(job, prediction) + "\n\n";
+        }
+
+        jobsArea.setText(text);
+        jobsArea.setCaretPosition(0);
 
         boolean dirty = service.isDirty();
 
@@ -436,21 +271,96 @@ public class StudentFrame extends JFrame
             && allowance.getAvailable() > 0
         );
 
-        cancelButton.setEnabled(
-            !dirty && !displayedJobs.isEmpty()
-        );
-
-        detailsButton.setEnabled(
-            !displayedJobs.isEmpty()
-        );
-
+        cancelButton.setEnabled(!dirty);
         retrySaveButton.setEnabled(dirty);
 
         if (dirty) {
-            saveLabel.setText("Unsaved changes - click Retry save.");
+            saveLabel.setText("Unsaved: use Retry save");
         } else {
-            saveLabel.setText("Changes saved.");
+            saveLabel.setText("Changes saved");
         }
+    }
+
+    private String describeJob(
+            Job job, JobPrediction prediction) {
+
+        String gpu = "-";
+
+        if (job.getAssignedGpuId() != null) {
+            gpu = "GPU" + job.getAssignedGpuId();
+        }
+
+        String queueWait = "-";
+
+        if (job.getQueueWaitMinutes() != null) {
+            queueWait = job.getQueueWaitMinutes() + " minutes";
+        }
+
+        String charge = "Not settled";
+
+        if (JobStatus.COMPLETED.equals(job.getStatus())
+                || JobStatus.CANCELLED.equals(job.getStatus())) {
+
+            charge = job.getCharge() + " minutes";
+        }
+
+        String result = job.getResultSummary();
+
+        if (result.equals("")) {
+            result = "Not available yet";
+        }
+
+        String text =
+            "Job: " + job.getDisplayId()
+            + "\nTitle: " + job.getTitle()
+            + "\nApplication: " + job.getApplicationName()
+            + "\nDescription: " + job.getDescription()
+            + "\nSize: " + job.getTaskSize()
+            + "\nWorkload units: " + job.getWorkloadUnits()
+            + "\nStatus: " + job.getStatus()
+            + "\nActual GPU: " + gpu
+            + "\nSubmitted: " + format(job.getSubmissionTime())
+            + "\nActual start: " + format(job.getStartTime())
+            + "\nActual finish: " + format(job.getFinishTime())
+            + "\nGPU runtime: "
+            + job.getRuntime(service.getCurrentTime()) + " minutes"
+            + "\nActual queue wait: " + queueWait
+            + "\nSettled charge: " + charge;
+
+        if (JobStatus.RUNNING.equals(job.getStatus())) {
+
+            text += "\nExpected finish: " + format(
+                job.getStartTime().plusMinutes(
+                    job.getEstimatedDuration()
+                )
+            );
+        }
+
+        if (prediction != null) {
+
+            text +=
+                "\nQueue position: " + prediction.getQueuePosition()
+                + "\nPredicted GPU: GPU"
+                + prediction.getPredictedGpuId()
+                + "\nPredicted start: "
+                + format(prediction.getPredictedStart())
+                + "\nPredicted finish: "
+                + format(prediction.getPredictedFinish())
+                + "\nRemaining wait: "
+                + prediction.getRemainingWaitMinutes() + " minutes";
+        }
+
+        if (JobStatus.CANCELLED.equals(job.getStatus())) {
+
+            text +=
+                "\nCancelled at: "
+                + format(job.getCancellationTime())
+                + "\nCancelled by: " + job.getCancelledBy()
+                + "\nCancellation reason: "
+                + job.getCancellationReason();
+        }
+
+        return text + "\nResult: " + result;
     }
 
     @Override
@@ -466,9 +376,6 @@ public class StudentFrame extends JFrame
             } else if (source == cancelButton) {
                 handleCancel();
 
-            } else if (source == detailsButton) {
-                showDetails();
-
             } else if (source == retrySaveButton) {
                 service.saveNow();
 
@@ -483,7 +390,13 @@ public class StudentFrame extends JFrame
                 clearForm();
             }
 
-            showError("The change exists in memory but could not be saved.\n"
+            if (event.getSource() == cancelButton
+                    && service.isDirty()) {
+                cancelIdField.setText("");
+            }
+
+            showError(
+                "The change was applied but could not be saved.\n"
                 + "Click Retry save instead of repeating the action.\n"
                 + exception.getMessage()
             );
@@ -504,7 +417,9 @@ public class StudentFrame extends JFrame
                 || applicationField.getText().trim().equals("")
                 || descriptionArea.getText().trim().equals("")) {
 
-            throw new IllegalArgumentException("Complete all job fields.");
+            throw new IllegalArgumentException(
+                "Complete all job fields."
+            );
         }
 
         TaskSize size = (TaskSize) sizeBox.getSelectedItem();
@@ -514,22 +429,22 @@ public class StudentFrame extends JFrame
         if (size.getDuration() > available) {
             throw new IllegalArgumentException(
                 "This job needs " + size.getDuration()
-                + " minutes, but you have only "
+                + " minutes. You have "
                 + available + " available."
             );
         }
 
-        int choice = JOptionPane.showConfirmDialog(
+        int answer = JOptionPane.showConfirmDialog(
             this,
-            "Submit: " + titleField.getText().trim()
+            "Submit " + titleField.getText().trim() + "?"
             + "\nDuration: " + size.getDuration() + " minutes"
-            + "\nAvailable after submission: "
+            + "\nAvailable afterwards: "
             + (available - size.getDuration()),
             "Confirm job",
             JOptionPane.YES_NO_OPTION
         );
 
-        if (choice != JOptionPane.YES_OPTION) {
+        if (answer != JOptionPane.YES_OPTION) {
             return;
         }
 
@@ -542,28 +457,60 @@ public class StudentFrame extends JFrame
 
         clearForm();
 
-        JOptionPane.showMessageDialog(
-            this, "Job accepted."
-        );
+        JOptionPane.showMessageDialog(this, "Job accepted.");
     }
 
     private void handleCancel() throws IOException {
 
-        Job job = selectedJob();
+        String input = cancelIdField.getText().trim();
 
-        if (!JobStatus.QUEUED.equals(job.getStatus())
-                && !JobStatus.RUNNING.equals(job.getStatus())) {
+        if (input.length() > 0
+                && (input.charAt(0) == 'J'
+                || input.charAt(0) == 'j')) {
+
+            input = input.substring(1);
+        }
+
+        int id;
+
+        try {
+
+            id = Integer.parseInt(input);
+
+        } catch (NumberFormatException exception) {
+
+            throw new IllegalArgumentException("Enter a job ID such as J101 or 101.");
+        }
+
+        ArrayList<Job> jobs = service.getVisibleJobs("", null);
+
+        Job selected = null;
+
+        for (int i = 0; i < jobs.size(); i++) {
+
+            if (jobs.get(i).getJobId() == id) {
+                selected = jobs.get(i);
+                break;
+            }
+        }
+
+        if (selected == null) {
+            throw new IllegalArgumentException("No job belonging to you has that ID.");
+        }
+
+        if (!JobStatus.QUEUED.equals(selected.getStatus())
+                && !JobStatus.RUNNING.equals(selected.getStatus())) {
 
             throw new IllegalStateException("Only queued or running jobs can be cancelled.");
         }
 
-        int charge = job.getRuntime(
+        int charge = selected.getRuntime(
             service.getCurrentTime()
         );
 
         String reason = JOptionPane.showInputDialog(
             this,
-            "Cancel " + job.getDisplayId() + "?"
+            "Cancel " + selected.getDisplayId() + "?"
             + "\nCharge: " + charge + " GPU minutes."
             + "\nEnter a reason, then press OK to cancel:",
             "Cancel job",
@@ -571,120 +518,9 @@ public class StudentFrame extends JFrame
         );
 
         if (reason != null) {
-            service.cancelJob(job.getJobId(), reason);
+            service.cancelJob(id, reason);
+            cancelIdField.setText("");
         }
-    }
-
-    private void showDetails() {
-
-        Job job = selectedJob();
-
-        JobPrediction prediction = predictionFor(
-            job.getJobId()
-        );
-
-        String charge = "Not settled";
-
-        if (JobStatus.COMPLETED.equals(job.getStatus())
-                || JobStatus.CANCELLED.equals(job.getStatus())) {
-
-            charge = job.getCharge() + " minutes";
-        }
-
-        String wait = "-";
-
-        if (job.getQueueWaitMinutes() != null) {
-            wait = job.getQueueWaitMinutes() + " minutes";
-        }
-
-        String gpu = "-";
-
-        if (job.getAssignedGpuId() != null) {
-            gpu = "GPU" + job.getAssignedGpuId();
-        }
-
-        String text =
-            "Job: " + job.getDisplayId()
-            + "\nTitle: " + job.getTitle()
-            + "\nApplication: " + job.getApplicationName()
-            + "\nDescription: " + job.getDescription()
-            + "\nSize: " + job.getTaskSize()
-            + "\nWorkload units: " + job.getWorkloadUnits()
-            + "\nStatus: " + job.getStatus()
-            + "\nActual GPU: " + gpu
-            + "\nSubmitted: " + format(job.getSubmissionTime())
-            + "\nActual start: " + format(job.getStartTime())
-            + "\nActual finish: " + format(job.getFinishTime())
-            + "\nExecution runtime: "
-            + job.getRuntime(service.getCurrentTime()) + " minutes"
-            + "\nActual queue wait: " + wait
-            + "\nSettled charge: " + charge;
-
-        if (prediction != null) {
-
-            text +=
-                "\n\nQueue position: " + prediction.getQueuePosition()
-                + "\nPredicted GPU: GPU"
-                + prediction.getPredictedGpuId()
-                + "\nPredicted start: "
-                + format(prediction.getPredictedStart())
-                + "\nPredicted finish: "
-                + format(prediction.getPredictedFinish())
-                + "\nRemaining wait: "
-                + prediction.getRemainingWaitMinutes() + " minutes";
-        }
-
-        if (JobStatus.CANCELLED.equals(job.getStatus())) {
-
-            text +=
-                "\n\nCancelled at: "
-                + format(job.getCancellationTime())
-                + "\nCancelled by: " + job.getCancelledBy()
-                + "\nReason: " + job.getCancellationReason();
-        }
-
-        text += "\n\nResult: " + job.getResultSummary();
-
-        JTextArea area = new JTextArea(text, 22, 65);
-
-        area.setEditable(false);
-        area.setLineWrap(true);
-        area.setWrapStyleWord(true);
-        area.setCaretPosition(0);
-
-        JOptionPane.showMessageDialog(
-            this,
-            new JScrollPane(area),
-            "Job details",
-            JOptionPane.INFORMATION_MESSAGE
-        );
-    }
-
-    private Job selectedJob() {
-
-        int row = jobsTable.getSelectedRow();
-
-        if (row < 0) {
-            throw new IllegalArgumentException(
-                "Select a job first."
-            );
-        }
-
-        return displayedJobs.get(
-            jobsTable.convertRowIndexToModel(row)
-        );
-    }
-
-    private JobPrediction predictionFor(int jobId) {
-
-        for (int i = 0; i < predictions.size(); i++) {
-
-            if (predictions.get(i).getJobId() == jobId) {
-                return predictions.get(i);
-            }
-        }
-
-        return null;
     }
 
     private String format(LocalDateTime time) {
@@ -706,9 +542,7 @@ public class StudentFrame extends JFrame
     private void handleLogout() {
 
         service.logout();
-
         loggedOut = true;
-
         dispose();
     }
 
