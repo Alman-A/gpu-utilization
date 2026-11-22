@@ -13,31 +13,23 @@ public class RegistrationDialog extends JDialog
 
     private ApplicationService service;
 
-    private JLabel idLabel, nameLabel, emailLabel;
-    private JLabel phoneLabel, passwordLabel;
-
     private JTextField idField, nameField, emailField, phoneField;
     private JPasswordField passwordField;
-
     private JButton submitButton, backButton;
 
-    public RegistrationDialog(JFrame parent, Main navigation,ApplicationService service) {
+    private boolean registrationWaitingForSave;
+
+    public RegistrationDialog(JFrame parent, Main navigation,
+                              ApplicationService service) {
 
         super(parent, true);
 
         this.service = service;
+        registrationWaitingForSave = false;
 
         setTitle("Student Registration");
         setSize(450, 350);
-
-        GridLayout layout = new GridLayout(7, 2);
-        setLayout(layout);
-
-        idLabel = new JLabel("University ID:");
-        nameLabel = new JLabel("Full Name:");
-        emailLabel = new JLabel("Email:");
-        phoneLabel = new JLabel("Phone:");
-        passwordLabel = new JLabel("Password:");
+        setLayout(new GridLayout(7, 2));
 
         idField = new JTextField();
         nameField = new JTextField();
@@ -51,19 +43,19 @@ public class RegistrationDialog extends JDialog
         add(new JLabel("Student Registration"));
         add(new JLabel(""));
 
-        add(idLabel);
+        add(new JLabel("University ID:"));
         add(idField);
 
-        add(nameLabel);
+        add(new JLabel("Full Name:"));
         add(nameField);
 
-        add(emailLabel);
+        add(new JLabel("Email:"));
         add(emailField);
 
-        add(phoneLabel);
+        add(new JLabel("Phone:"));
         add(phoneField);
 
-        add(passwordLabel);
+        add(new JLabel("Password:"));
         add(passwordField);
 
         add(submitButton);
@@ -72,99 +64,160 @@ public class RegistrationDialog extends JDialog
         submitButton.addActionListener(this);
         backButton.addActionListener(this);
 
+        // X must check unsaved changes just like Back.
+        setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+
+        addWindowListener(new WindowAdapter() {
+
+            public void windowClosing(WindowEvent e) {
+                handleBack();
+            }
+        });
+
         if (service.isDirty()) {
             submitButton.setText("Retry Save");
+            setFieldsEnabled(false);
         }
     }
 
     public void actionPerformed(ActionEvent e) {
 
         if (e.getSource() == submitButton) {
-
-            // Retry saving an earlier change without registering twice.
-            if (service.isDirty()) {
-
-                try {
-                    service.saveNow();
-
-                    JOptionPane.showMessageDialog(this,"Changes saved. You can now continue.");
-
-                    submitButton.setText("Register");
-
-                } catch (IOException exception) {
-
-                    JOptionPane.showMessageDialog(this,"Saving failed: " + exception.getMessage());
-                }
-
-                return;
-            }
-
-            String id = idField.getText().trim();
-            String name = nameField.getText().trim();
-            String email = emailField.getText().trim();
-            String phone = phoneField.getText().trim();
-            String password = new String(passwordField.getPassword());
-
-            if (id.equals("") || name.equals("")
-                    || email.equals("") || phone.equals("")
-                    || password.trim().equals("")) {
-
-                JOptionPane.showMessageDialog(this,"Please fill in all five fields.");
-
-            } else {
-
-                try {
-                    service.register(id, name, email, phone, password);
-
-                    JOptionPane.showMessageDialog(this,"Registration submitted.\n"+ "Your request is pending administrator approval.");
-
-                    passwordField.setText("");
-                    dispose();
-
-                } catch (IllegalArgumentException exception) {
-
-                    JOptionPane.showMessageDialog(
-                            this, exception.getMessage());
-
-                } catch (IllegalStateException exception) {
-
-                    JOptionPane.showMessageDialog(
-                            this, exception.getMessage());
-
-                } catch (SecurityException exception) {
-
-                    JOptionPane.showMessageDialog(
-                            this, exception.getMessage());
-
-                } catch (IOException exception) {
-
-                    if (service.isDirty()) {
-
-                        submitButton.setText("Retry Save");
-
-                        JOptionPane.showMessageDialog(this,
-                            "Your request is in memory but was not saved.\n"+
-                             "Click Retry Save before continuing.");
-
-                    } else {
-
-                        JOptionPane.showMessageDialog(this,"Saving failed: " + exception.getMessage());
-                    }
-                }
-            }
+            handleRegister();
 
         } else if (e.getSource() == backButton) {
+            handleBack();
+        }
+    }
 
-            if (service.isDirty()) {
+    private void handleRegister() {
 
-                JOptionPane.showMessageDialog(this,
-                        "Please click Retry Save before going back.");
+        if (service.isDirty()) {
 
-            } else {
+            try {
+                // Save the existing request without registering it again.
+                service.saveNow();
+
+                if (registrationWaitingForSave) {
+
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "Registration saved.\n"
+                            + "Your request is pending administrator approval.");
+
+                } else {
+
+                    JOptionPane.showMessageDialog(
+                            this, "Changes saved.");
+                }
 
                 passwordField.setText("");
                 dispose();
+
+            } catch (IOException exception) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Saving failed: " + exception.getMessage());
+            }
+
+            return;
+        }
+
+        // Another part of the app may already have saved the request.
+        if (registrationWaitingForSave) {
+            passwordField.setText("");
+            dispose();
+            return;
+        }
+
+        String id = idField.getText().trim();
+        String name = nameField.getText().trim();
+        String email = emailField.getText().trim();
+        String phone = phoneField.getText().trim();
+        String password = new String(passwordField.getPassword());
+
+        if (id.equals("") || name.equals("") || email.equals("")
+                || phone.equals("") || password.trim().equals("")) {
+
+            JOptionPane.showMessageDialog(
+                    this, "Please fill in all five fields.");
+
+            return;
+        }
+
+        try {
+            service.register(id, name, email, phone, password);
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Registration submitted.\n"
+                    + "Your request is pending administrator approval.");
+
+            passwordField.setText("");
+            dispose();
+
+        } catch (IllegalArgumentException exception) {
+
+            JOptionPane.showMessageDialog(
+                    this, exception.getMessage());
+
+        } catch (IllegalStateException exception) {
+
+            JOptionPane.showMessageDialog(
+                    this, exception.getMessage());
+
+        } catch (SecurityException exception) {
+
+            JOptionPane.showMessageDialog(
+                    this, exception.getMessage());
+
+        } catch (IOException exception) {
+
+            if (service.isDirty()) {
+
+                registrationWaitingForSave = true;
+                submitButton.setText("Retry Save");
+
+                passwordField.setText("");
+                setFieldsEnabled(false);
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Your request is in memory but was not saved.\n"
+                        + "Click Retry Save before continuing.\n"
+                        + exception.getMessage());
+
+            } else {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Saving failed: " + exception.getMessage());
             }
         }
+    }
+
+    private void handleBack() {
+
+        if (service.isDirty()) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Please click Retry Save before going back.");
+
+        } else {
+
+            passwordField.setText("");
+            dispose();
+        }
+    }
+
+    private void setFieldsEnabled(boolean enabled) {
+
+        idField.setEnabled(enabled);
+        nameField.setEnabled(enabled);
+        emailField.setEnabled(enabled);
+        phoneField.setEnabled(enabled);
+        passwordField.setEnabled(enabled);
     }
 }
