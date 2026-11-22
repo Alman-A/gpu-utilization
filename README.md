@@ -7,7 +7,7 @@ This is our COSC230 Object Oriented Programming course project. It is a Java Swi
 - Khalifa University
 - COSC230 Object Oriented Programming — Fall 2026
 - Lab section: B2
-- Instructor: Mohamed Nagy
+- Instructors: Mohamed Nagy Mostafa Mohamed, Mohammad Arif Rasyidi
 
 ## Team members
 
