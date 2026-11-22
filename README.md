@@ -14,7 +14,7 @@ This is our COSC230 Object Oriented Programming course project. It is a Java Swi
 | Name | Student ID | GitHub username |
 | --- | --- | --- |
 | Alman Ahmed | 100068766 | Alman-A |
-| Ala Ahameed Bin Jaffer | 100068748 | ala-ahmed |
+| Ala Ahamed Bin Jaffer | 100068748 | ala-ahmed |
 
 Repository: https://github.com/Alman-A/gpu-utilization
 
@@ -105,7 +105,7 @@ Keep a backup of the supplied save before continuing the demonstration. To start
 - ClockSetupDialog.java
 - Main.java
 
-### Ala Ahameed Bin Jaffer — ala-ahmed
+### Ala Ahamed Bin Jaffer — ala-ahmed
 
 - User.java
 - Administrator.java
