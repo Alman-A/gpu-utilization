@@ -1,0 +1,391 @@
+GPU_TEXT_2
+122
+S2026-11-16T10:00
+S2026-11-16T10:25
+7
+SS001
+SAli
+Sali@example.com
+S0501234501
+STest123
+SAPPROVED
+SS002
+SSara
+Ssara@example.com
+S0501234502
+STest123
+SAPPROVED
+SS003
+SHamad
+Shamad@example.com
+S0501234503
+STest123
+SAPPROVED
+SS004
+SMariam
+Smariam@example.com
+S0501234504
+STest123
+SAPPROVED
+SS005
+SNoura
+Snoura@example.com
+S0501234505
+STest123
+SAPPROVED
+SS006
+SPending Student
+Spending@example.com
+S0501234506
+STest123
+SPENDING
+SS007
+SRejected Student
+Srejected@example.com
+S0501234507
+S	Test123
+SREJECTED
+5
+SS001
+120
+17
+50
+SS002
+100
+20
+35
+SS003
+100
+20
+35
+SS004
+100
+20
+15
+SS005
+100
+0
+75
+1
+SS001
+20
+SAdditional allocation for testing
+Sadmin
+S2026-11-16T10:20
+21
+101
+SS001
+STest 101
+SSimulation
+SProject scheduling test 101
+SSmall
+S2026-11-16T10:00
+SCOMPLETED
+1
+S2026-11-16T10:00
+S2026-11-16T10:05
+N
+N
+N
+SSimulated execution completed successfully; 5 GPU minutes.
+102
+SS002
+STest 102
+SSimulation
+SProject scheduling test 102
+SMedium
+S2026-11-16T10:00
+SCOMPLETED
+2
+S2026-11-16T10:00
+S2026-11-16T10:15
+N
+N
+N
+SSimulated execution completed successfully; 15 GPU minutes.
+103
+SS003
+STest 103
+SSimulation
+SProject scheduling test 103
+SMedium
+S2026-11-16T10:00
+SCOMPLETED
+3
+S2026-11-16T10:00
+S2026-11-16T10:15
+N
+N
+N
+SSimulated execution completed successfully; 15 GPU minutes.
+104
+SS004
+STest 104
+SSimulation
+SProject scheduling test 104
+SLarge
+S2026-11-16T10:00
+SCANCELLED
+4
+S2026-11-16T10:00
+S2026-11-16T10:20
+S2026-11-16T10:20
+Sadmin
+SAdministrator running-cancellation test
+SCancelled; 20 GPU minutes charged.
+105
+SS001
+STest 105
+SSimulaiton
+SLARGE
+SLarge
+S2026-11-16T10:08
+SCANCELLED
+1
+S2026-11-16T10:08
+S2026-11-16T10:20
+S2026-11-16T10:20
+SS001
+SStudent running-cancellation test
+SCancelled; 12 GPU minutes charged.
+106
+SS002
+STest 106
+SSimulation
+SSARA MED
+SMedium
+S2026-11-16T10:10
+SRUNNING
+2
+S2026-11-16T10:15
+N
+N
+N
+N
+S
+107
+SS003
+STest 107
+SSimulaiton
+SHamad Large
+SSmall
+S2026-11-16T10:12
+SCOMPLETED
+3
+S2026-11-16T10:15
+S2026-11-16T10:20
+N
+N
+N
+SSimulated execution completed successfully; 5 GPU minutes.
+108
+SS005
+STest 108
+SSimulaiton
+SNoura med
+SMedium
+S2026-11-16T10:16
+SRUNNING
+3
+S2026-11-16T10:20
+N
+N
+N
+N
+S
+109
+SS002
+STest 109
+SSimulation
+SSara small
+SSmall
+S2026-11-16T10:18
+SCOMPLETED
+4
+S2026-11-16T10:20
+S2026-11-16T10:25
+N
+N
+N
+SSimulated execution completed successfully; 5 GPU minutes.
+110
+SS003
+STest 109
+Ssimulation
+SHamad small
+SSmall
+S2026-11-16T10:19
+SCANCELLED
+0
+N
+N
+S2026-11-16T10:19
+SS003
+STesting queued cancellation
+SCancelled; 0 GPU minutes charged.
+111
+SS005
+STest 111
+Ssimulatioon
+SProject scheduling test 111
+SLarge
+S2026-11-16T10:20
+SRUNNING
+1
+S2026-11-16T10:20
+N
+N
+N
+N
+S
+112
+SS001
+STest 112
+Ssimulation
+STest 112 small
+SSmall
+S2026-11-16T10:20
+SRUNNING
+4
+S2026-11-16T10:25
+N
+N
+N
+N
+S
+113
+SS001
+STest 113
+Ssimulation
+SMedium
+SMedium
+S2026-11-16T10:20
+SQUEUED
+0
+N
+N
+N
+N
+N
+S
+114
+SS001
+STest 114
+SSimulaiton
+SLarge
+SLarge
+S2026-11-16T10:20
+SQUEUED
+0
+N
+N
+N
+N
+N
+S
+115
+SS002
+STest 115
+SSimulaiton
+SS small
+SSmall
+S2026-11-16T10:20
+SQUEUED
+0
+N
+N
+N
+N
+N
+S
+116
+SS002
+STest 116
+SSimulation
+SS med
+SMedium
+S2026-11-16T10:20
+SQUEUED
+0
+N
+N
+N
+N
+N
+S
+117
+SS003
+STest 117
+Ssimulaiton
+SH Smal
+SSmall
+S2026-11-16T10:20
+SQUEUED
+0
+N
+N
+N
+N
+N
+S
+118
+SS003
+STest 118
+SSIM
+SH large
+SLarge
+S2026-11-16T10:20
+SQUEUED
+0
+N
+N
+N
+N
+N
+S
+119
+SS004
+STest 119
+SSimulation
+SM MED
+SMedium
+S2026-11-16T10:20
+SQUEUED
+0
+N
+N
+N
+N
+N
+S
+120
+SS005
+STest 120
+SSimulation
+SNoura large
+SLarge
+S2026-11-16T10:20
+SQUEUED
+0
+N
+N
+N
+N
+N
+S
+121
+SS001
+STest 121
+SSimulation
+SExact allowance test
+SMedium
+S2026-11-16T10:20
+SCANCELLED
+0
+N
+N
+S2026-11-16T10:20
+SS001
+SExact-match allowance test completed
+SCancelled; 0 GPU minutes charged.
+END
